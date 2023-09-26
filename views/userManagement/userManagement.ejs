@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="../css/app.css">
+</head>
+
+<body class="m-0 p-0 container-fluid">
+    <%- include('../inc/header') %>
+        <table class="table table-hover table-bordered mt-4">
+            <thead>
+                <tr class="text-center">
+                    <th class="text-primary col-md-1 sm-1 " scope="col">#</th>
+                    <th class="text-primary col-md-2 sm-2" scope="col">Name</th>
+                    <th class="text-primary col-md-3 sm-3" scope="col">Email</th>
+                    <th class="text-primary col-md-2 sm-2" scope="col">avata</th>
+                    <th class="text-primary col-md-1 sm-1" scope="col">vai trò</th>
+                    <th class="text-primary col-md-3 sm-3" scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% listUser.forEach((item , index)=> {%>
+
+
+                    <tr class="align-middle text-center">
+                        <td>
+                            <%= index+1 %>
+                        </td>
+                        <td>
+                            <%= item.userName %>
+                        </td>
+                        <td>
+                            <%= item.userEmail %>
+                        </td>
+                        <td>
+                            <% if(item.userAvata == undefined){ %>
+                                <img src="/images/avatar_default.png" style="width: 150px;height: 120px;" alt=""
+                                    class="product-image">
+                                <% }else{ %>
+                                    <img src="/uploads/<%= item.userAvata %>" alt="" style="width: 150px;height: 120px;">
+                                    <% } %>
+
+                        </td>
+                        <td>
+                            <%= item.userPms %>
+                        </td>
+
+                        <td class="text-center">
+                            <a href="/user-management/<%= item._id %>" class="btn btn-warning">View</a>
+
+                            <button data-item-id="<%= item._id %>" data-item-name="<%= item.userName %>"
+                                data-item-avata="<%= item.userAvata %>" data-item-email="<%= item.userEmail %>"
+                                data-item-pass="<%= item.userPass %>" data-item-pms="<%= item.userPms %>"
+                                class="btn btn-success m-2" data-bs-toggle="modal"
+                                data-bs-target="#editModal">Edit</button>
+
+                            <button data-item-id="<%= item._id %>" data-item-name="<%= item.userName %>"
+                                class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal">Delete</button>
+                        </td>
+                    </tr>
+
+                    <%})%>
+
+
+
+
+
+            </tbody>
+        </table>
+
+        <!-- //////////////// sửa /////////////////////// -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="editModalLabel">Edit product</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="editForm" method="POST">
+                        <div class="modal-body">
+
+                            <label for="nameProduct" class="form-label">Name</label>
+                            <input name="userName" type="text" id="userName" class="form-control">
+
+                            <div class="mb-3">
+                                <label for="avatar" class="form-label">Avatar:</label>
+                                <input type="text" id="userAvata" name="userAvata" class="form-control" >
+                            </div>
+
+                            <label for="descriptionProduct" class="form-label">Email</label>
+                            <input name="description" type="text" id="userEmail" class="form-control">
+
+                            <label for="priceProduct" class="form-label">Password</label>
+                            <input name="userPass" type="password" id="userPassw" class="form-control">
+
+                            <label for="cateId">Permission</label>
+                            <select class="form-select mt-2" aria-label="Pick Category" name="cateId" required>
+                                <option value="admin">admin</option>
+                                <option value="user">user</option>
+                            </select>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- //////////////// modal delete ///////////// -->
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="deleteModalLabel">Delete product</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/user-management/delete" method="POST">
+                        <div class="modal-body">
+                            Bạn chắc chắn muốn xóa?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../inc/footer') %>
+
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+                integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+                crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+                integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+                crossorigin="anonymous"></script>
+            <!-- Delete -->
+            <script>
+                const deleteButtons = document.querySelectorAll('.btn.btn-danger');
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                const deleteForm = document.querySelector('form[action="/user-management/delete"]');
+
+                // Bắt sự kiện khi nút "Delete" được nhấn
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        // Lấy giá trị item_id từ thuộc tính dữ liệu (data attribute)
+                        const itemId = this.getAttribute('data-item-id');
+                        const itemName = this.getAttribute('data-item-name');
+                        // Truy xuất phần tử trong modal để cập nhật nội dung
+                        const modalBody = deleteModal._element.querySelector('.modal-body');
+                        // Cập nhật nội dung modal với item_id tương ứng
+                        modalBody.textContent = `Do you want to delete named "${itemName}"?`;
+
+                        // Thay đổi giá trị của thuộc tính action của form khi nút "Delete" được nhấn
+                        deleteForm.action = `/user-management/delete/${itemId}`;
+                    });
+                });
+            </script>
+
+
+            <script>
+                const editButtons = document.querySelectorAll('.btn.btn-success');
+                const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                const editForm = document.getElementById('editForm');
+
+                // Bắt sự kiện khi nút "Edit" được nhấn
+                editButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        // Lấy giá trị item_id và item_name từ thuộc tính dữ liệu (data attribute)
+                        const itemId = this.getAttribute('data-item-id');
+                        const itemName = this.getAttribute('data-item-name');
+                        const itemEmail = this.getAttribute('data-item-email');
+                        const itemAvata = this.getAttribute('data-item-avata');
+                        const itemPass = this.getAttribute('data-item-pass');
+                        const itemPms = this.getAttribute('data-item-pms');
+
+                        // Truy xuất phần tử trong modal để cập nhật nội dung
+                        const modalBody = editModal._element.querySelector('.modal-body');
+                        const nameInput = editForm.querySelector('#userName');
+                        const categoryInput = editForm.querySelector('[name="cateId"]'); // Thêm đoạn này để truy xuất đến menu thả xuống "Category"
+                        const imageInput = editForm.querySelector('#userAvata');
+                        const priceInput = editForm.querySelector('#userEmail');
+                        const passInput = editForm.querySelector('#userPassw');
+                  
+
+                        // Cập nhật nội dung modal và input với item_id và item_name tương ứng
+                        nameInput.value = itemName;
+                        imageInput.value = itemAvata;
+                        priceInput.value = itemEmail;
+                        passInput.value = itemPass;
+                      
+
+                        // Thêm thuộc tính "selected" vào tùy chọn chính xác trong menu thả xuống "Category"
+                        const categoryOptions = categoryInput.querySelectorAll('option');
+                        categoryOptions.forEach(option => {
+                            if (option.value === itemPms) {
+                                option.setAttribute('selected', 'selected');
+                            } else {
+                                option.removeAttribute('selected');
+                            }
+                        });
+
+                        // Thay đổi giá trị của thuộc tính action của form khi nút "Edit" được nhấn
+                        editForm.action = `/user-management/edit/${itemId}`;
+                    });
+                });
+            </script>
+</body>
+
+</html>
